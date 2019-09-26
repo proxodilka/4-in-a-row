@@ -1,0 +1,21 @@
+.column{
+   display: flex;
+   flex-direction: column;
+   background-color: inherit;
+   cursor: pointer;
+}
+
+.column+.column{
+    margin-left: 5px;
+}
+
+.mark{
+    animation: pulseC 0.2s linear;
+}
+
+@keyframes pulseC{
+    0%{box-shadow: 0 0 5px 0px red; z-index: 1;}
+    50%{box-shadow: 0 0 15px 5px red;}
+    99%{box-shadow: 0 0 5px 0px red;}
+    100%{z-index: 0;}
+}

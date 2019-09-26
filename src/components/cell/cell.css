@@ -1,0 +1,47 @@
+.cell{
+    /* border: 1px solid rgba(255, 0, 0, 0.151); */
+    border-radius: 50%;
+    font-size: 200%;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+
+    background-color: white;
+
+    width: 60px;
+    height: 60px;
+    /* width: 5%;
+    height: 5%; */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 420px){
+    .cell{
+        width: 14vw;
+        height: 14vw;
+    }
+}
+
+.cell+.cell{
+    margin-top: 5px;
+}
+
+.circle{
+    height: 80%;
+    width: 80%;
+    /* background-color: red; */
+    border-radius: 50%;
+}
+
+.pulseAnimation{
+    animation: pulse 1s infinite linear;
+}
+
+@keyframes pulse{
+    0%{opacity: 1; transform: scale(1);}
+    50%{opacity: 0.3; transform: scale(0.9);}
+    100%{opacity: 1; transform: scale(1);}
+}
