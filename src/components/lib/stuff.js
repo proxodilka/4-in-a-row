@@ -1,3 +1,20 @@
+const getInsertPosition = (array)=>{
+    const ind = array.findIndex((a)=>a>0);
+    return (ind===-1?array.length:ind)-1;
+}
+
+const changeArrayElem = (array, pos, value)=>{
+    return array.map((arr, i)=>{
+        return arr.map((x, j)=>{
+            return i===pos.x && j===pos.y?value:norm(x);
+        });
+    })
+}
+
+const norm = (x)=>{
+    return x<0?0:x;
+}
+
 const MultiEqual = (...values)=>{
     for(let i=0; i<values.length; i++){
         for(let j=i+1; j<values.length; j++){
@@ -94,4 +111,4 @@ const checkWin = (src, winLen, justCheckWin=1)=>{
     return inRow;
 }
 
-export {MultiEqual, generateIndexes, getDiagonals, checkWin};
+export {MultiEqual, generateIndexes, getDiagonals, checkWin, changeArrayElem, getInsertPosition};

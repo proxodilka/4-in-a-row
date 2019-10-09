@@ -3,7 +3,7 @@ import './table.css';
 import Column from '../column/column.js';
 import TableHeader from '../table-header/table-header.js';
 
-const Table = ({currentPlayer, field, columnAction, cellsToPulse, gameState, exitGame, isFieldBlocked, winner})=>{
+const Table = ({currentPlayer, field, columnAction, cellsToPulse, gameState, exitGame, isFieldBlocked, winner, restart})=>{
 
     let tableFieldClassList="tableField";
     let tableRootClassList="tableRoot";
@@ -25,7 +25,7 @@ const Table = ({currentPlayer, field, columnAction, cellsToPulse, gameState, exi
     return (
         <div className={tableRootClassList}>
             <TableHeader currentPlayer={currentPlayer} exitGame={exitGame}
-                        winner={winner} style={{marginBottom: "5px"}}/>
+                         winner={winner} restart={restart} style={{marginBottom: "5px"}}/>
             <div className={tableFieldClassList}>
                 {field.map( (x, i)=>{
                     const cells = cellsToPulse.filter((x)=>x[0]===i);

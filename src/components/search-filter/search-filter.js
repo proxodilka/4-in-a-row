@@ -18,7 +18,7 @@ class SearchFilter extends React.Component{
 
     render(){
         return(
-            <div style={this.props.style} className="buttonsContainer">
+            <div style={this.props.style} className="SF-buttonsContainer">
                 {this.props.options.map((el, ind, arr)=>{
                     let classList = "btn";
 

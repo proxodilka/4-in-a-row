@@ -1,0 +1,63 @@
+.roomUnit{
+    position: relative;
+    box-shadow: 0 0 5px 1px rgba(0,0,0,0.1);
+    cursor: pointer;
+    border: 1px solid #d2d7dd;
+    border-radius: 5px;
+    padding: 10px;
+    transition-duration: 0.2s;
+}
+
+.roomUnit + .roomUnit{
+    margin-top: 10px;
+}
+
+.roomUnit:hover{
+    transform: scale(1.01);
+}
+
+.headerBlock{
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.statusRoot{
+    flex-shrink: 0;
+}
+
+.roomName{
+    font-weight: bold;
+    font-size: 150%;
+}
+
+.deleteButton{
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+#delete{
+
+}
+
+.buttonsBlock{
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid rgba(0,0,0,0.2);
+    margin-top: 7px;
+    padding-top: 7px;
+}
+
+.enterButtons button+button{
+    margin-left: 5px;
+}
+
+.countersRoot{
+    display: flex;
+    justify-content: space-between;
+}
+
+.spectators{
+    opacity: 0.5;
+    margin-left: 60px;
+}

@@ -1,22 +1,41 @@
 import React, { useState, useEffect } from 'react';
+import {Redirect} from 'react-router-dom';
+import axios from 'axios';
 import './game.css';
 
+
 import Table from '../table/table.js';
+import Multiplayer from '../multiplayer/multiplayer';
 import AiTurn from '../ai/ai.js';
 import {checkWin} from '../lib/stuff.js';
 import GameHeader from '../game-header/game-header.js';
 
 
+const TryToStartGame = (props)=>{
 
+    if (props.location.state===undefined){
+        return <Redirect to='/' />
+    }
+    console.log('interface');
+    if (props.location.state.gameInfo.gameMode.alias[1]=='web')
+        return <Multiplayer state={props.location.state} />
+    return <Game state={props.location.state} />
+    
+}
 
-const Game = ()=>{
+const Game = (props)=>{
 
-    const RowsNumber = 7, ColumnNumber = 6;
-
-    const WinLen=4;
+    const {fieldInfo, gameInfo} = props.state;
+    const {RowsNumber, ColumnNumber, WinLen} = fieldInfo;
+    const {gameMode} = gameInfo;
 
     const getEmptyField = (N,M)=>{
         return Array(M).fill(Array(N).fill(0));
+    }
+
+    const getInsertPosition = (array)=>{
+        const ind = array.findIndex((a)=>a>0);
+        return (ind===-1?array.length:ind)-1;
     }
 
     const initialGameFieldState = {
@@ -26,40 +45,33 @@ const Game = ()=>{
         lastHoverColumn: -1
     };
 
-    const [gameModes, setGameModes] = useState([
-        {id: 0, title: <span><i className="fa fa-user"></i> vs <i className="fa fa-desktop"></i></span>, alias: ['player', 'ai'], active: true},
-        {id: 1, title: <span><i className="fa fa-user"></i> vs <i className="fa fa-user"></i></span>, alias: ['player', 'player'], active: false},
-        {id: 2, title: <span><i className="fa fa-desktop"></i> vs <i className="fa fa-desktop"></i></span>, alias: ['ai', 'ai'], active: false}
-    ]);
-    const [gameMode, setGameMode] = useState({});
+    
     const [isFieldBlocked, setFieldBlock] = useState(true);
     const [winState, setWinState] = useState({
         cellsToPulse: [],
         winner: -1 // -1 = игра ещё идёт, 0 = ничья, >0 = номер выигравшего игрока
     }); 
     const [gameField, setGameFieldState] = useState(initialGameFieldState);
-    const [gameState, setGameState] = useState("setup");
+    const [gameState, setGameState] = useState("is on");
     const [curePlayer, setCurePlayer] = useState(1);
-
-
-    useEffect(()=>{
-        const {id, alias} = gameModes.find((x)=>x.active);
-        setGameMode({id, alias});
-    }, [gameModes]);
+    const [gonnaLeave, setGonnaLeave] = useState(false);
 
     useEffect(()=>{
         if (gameState==="is on")
             getNextTurn();
     },[gameState]);
 
-    const onGameModeChange = (id)=>{
-        setGameModes(gameModes.map((x)=>x.id===id?{...x, active: true}:{...x, active: false}));
-    }
-
-    const getInsertPosition = (array)=>{
-        const ind = array.findIndex((a)=>a>0);
-        return (ind===-1?array.length:ind)-1;
-    }
+    useEffect(()=>{
+        if (gameField.lastAction!=='action')
+            return;
+        const win = checkWin(gameField.field, WinLen);
+        if (!win.isWin){
+            nextPlayerTurn();
+        }   
+        else{
+            endGame(win);
+        }
+    }, [gameField]);
 
     const init = ()=>{
         setWinState({
@@ -82,6 +94,7 @@ const Game = ()=>{
     const exitGame = ()=>{
         init();
         setGameState("setup");
+        setGonnaLeave(true);
     }
 
     const norm = (x)=>{
@@ -91,7 +104,7 @@ const Game = ()=>{
     const changeArrayElem = (array, pos, value)=>{
         return array.map((arr, i)=>{
             return arr.map((x, j)=>{
-                return i===pos[0] && j===pos[1]?value:norm(x);
+                return i===pos.x && j===pos.y?value:norm(x);
             });
         })
     }
@@ -101,17 +114,15 @@ const Game = ()=>{
     }
 
     const move = (columnId, action, useEff=0)=>{
-        //console.log('move', action);
-        const insertPos = [columnId, getInsertPosition(gameField.field[columnId])];
-        if (insertPos[1]<0){
+        const insertPos = {x: columnId, y: getInsertPosition(gameField.field[columnId])};
+        if (insertPos.y<0){
             return;
         }
-
-        if (gameField.field[insertPos[0]][insertPos[1]]>0 && action==='hideHint'){
+        if (gameField.field[insertPos.x][insertPos.y]>0 && action==='hideHint'){
             return;
         }
         
-        let fieldValue=0;
+        let fieldValue;
 
         switch(action){
             case 'action': fieldValue=curePlayer; break;
@@ -119,15 +130,13 @@ const Game = ()=>{
             case 'hideHint' : fieldValue=0; break;
             default: fieldValue=0;
         }
-
         setGameFieldState({
                 field: changeArrayElem(gameField.field, insertPos, fieldValue),
                 lastAction: action,
-                lastColumn: action==='hint'?columnId:gameField.lastColumn
+                lastColumn: action==='hint'?columnId:gameField.lastColumn,
+                lastActionColumn: action==='action'?columnId:gameField.lastAction
             }
         );
-
-
     }
 
     const endGame = ({winner, indexes})=>{
@@ -142,17 +151,6 @@ const Game = ()=>{
         setCurePlayer(curePlayer===1?2:1);
     }
 
-    useEffect(()=>{
-        if (gameField.lastAction!=='action')
-            return;
-        const win = checkWin(gameField.field, WinLen);
-        if (!win.isWin){
-            nextPlayerTurn();
-        }   
-        else{
-            endGame(win);
-        }
-    }, [gameField]);
 
     const getNextTurn = ()=>{
         if (gameState!=="is on"){
@@ -178,7 +176,6 @@ const Game = ()=>{
 
     useEffect(getNextTurn, [curePlayer]);
 
-
     const curePlayerString = ()=>{
         if (gameMode.alias===undefined)
             return "¯\\_(ツ)_/¯";
@@ -195,15 +192,14 @@ const Game = ()=>{
 
     return (
         <div className="GameRoot">
-            <GameHeader gameModes={gameModes} onGameModeChange={onGameModeChange}
-                        toggleGameState={toggleGameState} gameState={gameState} />
-                        
+            {gonnaLeave?<Redirect to='/'/>:null}            
             <Table columnAction={clickHandler} winner={winState.winner} 
                    currentPlayer={curePlayerString()} field={gameField.field}
                    cellsToPulse={winState.cellsToPulse} gameState={gameState}
-                   exitGame={exitGame} isFieldBlocked={isFieldBlocked} />
+                   exitGame={exitGame} isFieldBlocked={isFieldBlocked}
+                   restart={startGame} />
         </div>
     );
 }
 
-export default Game;
+export default TryToStartGame;

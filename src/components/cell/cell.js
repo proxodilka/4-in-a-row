@@ -1,9 +1,11 @@
 import React from 'react';
+import {propTypes} from 'prop-types';
 import './cell.css';
 
 const color = ['transparent','red','orange'];
 
 const Cell = ({val, pulse=false})=>{
+
     const circleStyle = {
         backgroundColor: color[Math.abs(val)],
         opacity: val<0?0.3:1

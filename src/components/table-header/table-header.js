@@ -1,7 +1,7 @@
 import React from 'react';
 import './table-header.css';
 
-const TableHeader = ({winner, currentPlayer, exitGame, style})=>{
+const TableHeader = ({winner, currentPlayer, restart, exitGame, style})=>{
     let curePlayerText;
 
     // const getWinText = (text)=>{
@@ -13,11 +13,14 @@ const TableHeader = ({winner, currentPlayer, exitGame, style})=>{
         case 0: curePlayerText='Ничья!'; break; //lose
         default: curePlayerText=`Победил ${currentPlayer}`;
     }
-
     return(
         <div style={style} className="tableHeader">
             <div className="curePlayerText">{curePlayerText}</div>
-            <button onClick={exitGame} className="btn btn-danger"><i className="fa fa-times"></i></button>
+            <div className="buttonsContainer">
+                <button onClick={restart} className="btn btn-outline-primary"><i className="fa fa-repeat"></i></button>
+                <button onClick={exitGame} className="btn btn-danger"><i className="fa fa-times"></i></button>
+            </div>
+            
         </div>
     );
 }

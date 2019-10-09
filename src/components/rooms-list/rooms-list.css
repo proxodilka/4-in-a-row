@@ -1,0 +1,21 @@
+.roomListRoot{
+    width: 100%;
+}
+
+.roomsRoot{
+    margin-top: 10px;
+    min-height: 50px;
+    width: 100%;
+}
+
+.newRoomForm{
+    display: flex;
+}
+
+.newRoomForm input[type='text']{
+    flex-shrink: 1;
+}
+
+.newRoomForm button{
+    flex-shrink: 0;
+}

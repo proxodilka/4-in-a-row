@@ -3,6 +3,8 @@
     -webkit-user-select: none;
     -moz-user-select: none;
     border-bottom: 1px solid #80808085;
+    width:100%;
+    max-width: 600px;
 }
 
 .disabled{
@@ -31,4 +33,16 @@
 .selectorText{
     font-size: 100%;
     font-weight: bold;
+}
+
+.titleRoot{
+    display: flex;
+    justify-content: space-between;
+}
+
+.playerName{
+    border: none;
+    cursor: pointer;
+    text-align: end;
+    font-size: 150%;
 }

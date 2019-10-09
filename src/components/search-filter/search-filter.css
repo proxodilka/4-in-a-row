@@ -1,22 +1,22 @@
-.buttonsContainer{
+.SF-buttonsContainer{
     flex-shrink: 0;
     display: flex;
 }
 
-.buttonsContainer .btn{
+.SF-buttonsContainer .btn{
     border-radius: 0px;
     flex-basis: 100%;
     padding: 0;
 }
 
-.buttonsContainer .btn+.btn{
+.SF-buttonsContainer .btn+.btn{
     border-left: 0px;
 }
 
-.buttonsContainer .first{
+.SF-buttonsContainer .first{
     border-radius: 4px 0 0 4px;
 }
 
-.buttonsContainer .last{
+.SF-buttonsContainer .last{
     border-radius: 0 4px 4px 0;
 }
