@@ -105,7 +105,7 @@ const go = (player, deepLvl=0)=>{
     return res;
 }
 
-const turn = (table, player, isWin, _winLen)=>{
+const turn = (table, player, isWin, _winLen=4)=>{
     Table = table;
     IsWin = isWin;
     Player = player;

@@ -1,18 +1,7 @@
-const getInsertPosition = (array)=>{
-    const ind = array.findIndex((a)=>a>0);
-    return (ind===-1?array.length:ind)-1;
-}
+const insertInColumn = (array, columnId, value)=>{
+    const pos = {x: columnId, y: getInsertPosition(array[columnId])};
 
-const changeArrayElem = (array, pos, value)=>{
-    return array.map((arr, i)=>{
-        return arr.map((x, j)=>{
-            return i===pos.x && j===pos.y?value:norm(x);
-        });
-    })
-}
-
-const norm = (x)=>{
-    return x<0?0:x;
+    return changeArrayElem(array, pos, value);
 }
 
 const MultiEqual = (...values)=>{
@@ -111,4 +100,37 @@ const checkWin = (src, winLen, justCheckWin=1)=>{
     return inRow;
 }
 
-export {MultiEqual, generateIndexes, getDiagonals, checkWin, changeArrayElem, getInsertPosition};
+// const updArr = (arr, colId)=>{
+//     arr = changeArrayElem(arr, {x: colId, y: getInsertPosition(arr[colId])}, curePlayer);
+//     return arr;
+// }
+
+// const eraseFromArr = (arr, val)=>{
+//     const ind = arr.findIndex(x=>x==val);
+//     if (ind>=0)
+//         players.splice(ind,1);
+// }
+
+const norm = (x)=>{
+    return x<0?0:x;
+}
+
+
+const getEmptyField = (N,M)=>{
+    return Array(M).fill(Array(N).fill(0));
+}
+
+const getInsertPosition = (array)=>{
+    const ind = array.findIndex((a)=>a>0);
+    return (ind===-1?array.length:ind)-1;
+}
+
+const changeArrayElem = (array, pos, value)=>{
+    return array.map((arr, i)=>{
+        return arr.map((x, j)=>{
+            return i===pos.x && j===pos.y?value:norm(x);
+        });
+    })
+}
+
+export {checkWin, norm, getEmptyField, changeArrayElem, getInsertPosition, insertInColumn};

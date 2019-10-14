@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {Redirect} from 'react-router-dom';
 import axios from 'axios';
+import GameContext from './game-context';
 import './game.css';
 
 
@@ -9,6 +10,7 @@ import Multiplayer from '../multiplayer/multiplayer';
 import AiTurn from '../ai/ai.js';
 import {checkWin} from '../lib/stuff.js';
 import GameHeader from '../game-header/game-header.js';
+import GameHandler from '../game-handler/game-handler';
 
 
 const TryToStartGame = (props)=>{
@@ -17,9 +19,15 @@ const TryToStartGame = (props)=>{
         return <Redirect to='/' />
     }
     console.log('interface');
-    if (props.location.state.gameInfo.gameMode.alias[1]=='web')
-        return <Multiplayer state={props.location.state} />
-    return <Game state={props.location.state} />
+    // if (props.location.state.gameInfo.gameMode.alias[1]=='web')
+    //     return <Multiplayer state={props.location.state} />
+    // return <Game state={props.location.state} />
+
+    return(
+        <GameContext.Provider value={props.location.state}>
+            <GameHandler />
+        </GameContext.Provider>
+    );
     
 }
 
@@ -187,7 +195,7 @@ const Game = (props)=>{
     };
 
     const ai = ()=>{
-        return AiTurn( gameField.field.map((arr)=>[...arr]), curePlayer, checkWin, WinLen, (columnId)=>move(columnId, 'action'));
+        return AiTurn( gameField.field.map((arr)=>[...arr]), curePlayer, checkWin);
     }
 
     return (

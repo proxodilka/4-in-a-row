@@ -7,7 +7,7 @@ const Table = ({currentPlayer, field, columnAction, cellsToPulse, gameState, exi
 
     let tableFieldClassList="tableField";
     let tableRootClassList="tableRoot";
-    
+    console.log('field', field);
 
     // switch (gameState){
     //     case "setup": tableRootClassList+=" disabled"; break;

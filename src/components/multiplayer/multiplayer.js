@@ -1,18 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import {Redirect} from 'react-router-dom';
-import axios from 'axios';
+
 import './multiplayer.css';
 
 
 import Table from '../table/table.js';
-import AiTurn from '../ai/ai.js';
-import {checkWin, getInsertPosition, changeArrayElem} from '../lib/stuff.js';
-import GameHeader from '../game-header/game-header.js';
+import {getInsertPosition, changeArrayElem} from '../lib/stuff.js';
+import GameHandlerContext from '../game-handler/game-handler-context';
 
 let errMsg = 'no errors';
-
-
-const generateId = ()=>Math.random().toString(36).substr(2, 9);
 
 const getEmptyField = (N,M)=>{
     return Array(M).fill(Array(N).fill(0));
@@ -27,26 +23,10 @@ const error = ()=>{
     }}/>
 }
 
-const union = (arr1, arr2)=>{
-    //console.log(arr1);
-    const tmp = arr2.map((x,i)=>{
-        return x.map((y,j)=>{
-            console.log(arr1[i][j], y);
-            return arr1[i][j]<0?arr1[i][j]:y
-        })
-    })
-    //console.log('union', tmp);
-    return tmp;
-}
+const Game = ()=>{
 
-
-const delay=500;
-const base = 'http://localhost:4000';
-
-const Game = (props)=>{
-
-    const handleServerData = (data)=>{
-        console.log('data', data);
+    const handleData = (data, callAgain=false)=>{
+        console.log('data', data, uid);
         const {field, gameStatus, curePlayer, winState, players, lastMoveInitiator} = data;
         
         //console.log(`${players[curePlayer-1].id} == ${uid} && ${gameStatus}`);
@@ -59,34 +39,23 @@ const Game = (props)=>{
             curePlayer,
             winState,
             players,
+            callAgain,
         });
 
         
         if (role==='player' && players[curePlayer-1] && players[curePlayer-1].id==uid && gameStatus=='is on'){
-            //console.log('starting');
             setIsFieldBlocked(false);
         }
     }
 
     const exitGame = (req)=>{
-        //console.log(pingId);
-        //clearInterval(pingId);
-        console.log('exiting');
         errMsg = 'exiting with no errors';
         handleErrors(req);
-        
         setGonnaLeave(true);
     }
 
-    const fieldUrl = 'http://localhost:4000/info';
-    const moveUrl = 'http://localhost:4000/move';
-
-    const {fieldInfo, gameInfo, user, socket, roomInfo} = props.state;
-    const {RowsNumber, ColumnNumber, WinLen} = fieldInfo;
-    const {gameMode: {role}} = gameInfo;
-    const {userName} = user;
-
-    //const [pingId, setPingId] = useState(0);
+    const context = useContext(GameHandlerContext);
+    const {playerInfo: {id, players, userName}, gameInfo: {role}, controls: {useServer}, socket, roomInfo: {roomId}} = context;
 
     const [game, setGame] = useState({
         field: getEmptyField(7,6),
@@ -97,25 +66,28 @@ const Game = (props)=>{
             winner: -1,
             cellsToPulse: []
         },
-        players: ['Player1', 'Player2'],
+        players,
     })
 
+    useEffect(()=>{
+        if (game.callAgain){
+            setGame({...game, callAgain: false});
+            sendToServer('calling');
+        }
+    }, [game]);
 
     const [playerName] = useState(userName)
-    const [uid] = useState(socket.id);
+    const [uid] = useState(id);
     const [isFieldBlocked, setIsFieldBlocked] = useState(true);
     const [gonnaLeave, setGonnaLeave] = useState(false);
-    const [allowUnblocking, setAllowUnblocking] = useState(true);
-
     const sendToServer = useServer({
-        socket, playerName,
-        handleData: handleServerData,
+        socket,
+        playerName,
+        handleData,
         onError: exitGame, 
-        roomId: roomInfo,
+        roomId,
         role,
     });
-
-    
 
     const curePlayerString = ()=>{
         return game.players[game.curePlayer-1]?game.players[game.curePlayer-1].playerName:'Unknown player';
@@ -125,11 +97,6 @@ const Game = (props)=>{
         const [columnId, action] = args;
 
         let value=0;
-
-        //console.log(action);
-        // if (action!=='action')
-        //     return;
-
         switch (action){
             case 'action': value=game.curePlayer; break;
             case 'hint': value=-game.curePlayer; break;
@@ -150,8 +117,6 @@ const Game = (props)=>{
             initiator: 'player',
         });
 
-        // sendToServer('move', {moveInfo: {columnId, action}, roomInfo: {roomId: roomInfo}});
-
         if (action!=='action')
             return;
 
@@ -161,9 +126,8 @@ const Game = (props)=>{
 
     useEffect(()=>{
         if (game.initiator==='player'){
-            sendToServer('move', {moveInfo: {columnId: game.lastColumn, action: game.lastAction}, roomInfo: {roomId: roomInfo}})
+            sendToServer('move', {moveInfo: {columnId: game.lastColumn, action: game.lastAction}, roomInfo: {roomId}});
         }
-        
     }, [game])
 
     const handleErrors = (req)=>{
@@ -173,9 +137,9 @@ const Game = (props)=>{
     }
 
     const restartGame = ()=>{
-        if (role!=='player' || game.gameStatus!=='ended')
+        if (role!=='player')
             return;
-        sendToServer('restart', {id: uid, roomId: roomInfo});
+        sendToServer('restart', {id: uid, roomId});
     }
     
     return (
@@ -189,49 +153,6 @@ const Game = (props)=>{
             <div className="status">{game.gameStatus} {role==='spectator'?' | You are in spectator mode':null}</div>
         </div>
     );
-}
-
-const useServer = ({socket, playerName, handleData, onError, roomId, role})=>{
-
-    const handleDataCallback = useRef();
-
-    useEffect(()=>{
-        handleDataCallback.current = handleData;
-    })
-
-    useEffect(()=>{
-        socket.emit('join-room', {roomId, playerName, role}, (res)=>{
-            console.log('join-room', onError);
-            if (!res.ok){
-                onError(res.reason);
-                return;
-            }
-            //socket.emit('get-room-data', {playerId: socket.id, roomId}, handleDataCallback.current);
-        });
-
-        socket.on('field-updated', (data)=>handleDataCallback.current(data));
-        //socket.on('field-updated', ()=>console.log('testObj', testObj));
-        socket.on('kick-from-room', onError)
-
-
-        socket.on('disconnect', ()=>{
-            onError('connection lost')
-        })
-
-        return ()=>{
-            socket.emit('leave-room', {id: socket.id, roomId});
-
-            socket.removeAllListeners('field-updated');
-            socket.removeAllListeners('kick-from-room');
-        }
-    }, []);
-
-    const onPost = (addr, data)=>{
-        socket.emit(addr, data);
-    }
-
-    return onPost;
-    
 }
 
 export default Game;

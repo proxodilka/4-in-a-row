@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 import RoomsList from '../rooms-list/rooms-list.js';
 import './setup.css';
 
-const socket = io('http://192.168.1.59:4001');
+const socket = io('http://25.105.198.136:4001');
 const generateId = ()=>Math.random().toString(36).substr(2, 9);
 const localStorageUsernameKey = '4-in-a-row-username';
 
