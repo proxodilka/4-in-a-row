@@ -34,4 +34,5 @@
     background-color: #007bff;
     padding: 10px;
     border-radius: 8px;
+    transition-duration: 0.2s;
 }

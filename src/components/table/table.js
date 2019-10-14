@@ -15,8 +15,8 @@ const Table = ({currentPlayer, field, columnAction, cellsToPulse, gameState, exi
     //     default:
     // }
 
-    if (gameState==="setup"){
-        tableRootClassList+=" disabled";
+    if (gameState==="setup" || gameState==="waiting for players"){
+        tableFieldClassList+=" disabled";
     }
     else if (gameState==="ended" || isFieldBlocked){
         tableFieldClassList+=" notActive";

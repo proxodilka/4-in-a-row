@@ -31,10 +31,10 @@ const Game = ()=>{
         
         //console.log(`${players[curePlayer-1].id} == ${uid} && ${gameStatus}`);
         console.log('game', game, field);
-        //console.log('initiator', initiator);
+        console.log('initiator', lastMoveInitiator, uid);
 
         setGame({
-            field: lastMoveInitiator===uid?game.field:field,
+            field: lastMoveInitiator.id===uid?game.field:field,
             gameStatus,
             curePlayer,
             winState,

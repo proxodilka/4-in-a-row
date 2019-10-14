@@ -2,7 +2,7 @@
   "name": "first",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://proxodilka.github.io/4-in-a-row/",
+  "homepage": ".",
   "dependencies": {
     "axios": "^0.19.0",
     "prop-types": "^15.7.2",
