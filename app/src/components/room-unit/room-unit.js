@@ -25,8 +25,8 @@ const RoomUnit = ({roomInfo, userInfo, onRoomDelete, onRoomEnter})=>{
             </div>
             <div className="buttonsBlock">
                 <div className="enterButtons">
-                    <button id="spectator" className="btn btn-outline-primary" onClick={(e)=>{e.stopPropagation(); onRoomEnter(roomInfo.id, 'spectator')}}>Смотреть</button>
-                    <button id="join" className="btn btn-success" onClick={(e)=>{e.stopPropagation(); onRoomEnter(roomInfo.id)}}>Играть</button>
+                    <button id="spectator" className="btn btn-outline-primary" onClick={(e)=>{e.stopPropagation(); onRoomEnter(roomInfo.id, 'spectator')}}>Spectator</button>
+                    <button id="join" className="btn btn-success" onClick={(e)=>{e.stopPropagation(); onRoomEnter(roomInfo.id)}}>Join</button>
                 </div>
                 {roomInfo.creator===userInfo.id?
                 <div className="deleteButton">
