@@ -5,13 +5,15 @@ import io from 'socket.io-client';
 import RoomsList from '../rooms-list/rooms-list.js';
 import './setup.css';
 
-const socket = io(window.location.origin);
+const base = "localhost:4000";
+
+const socket = io(process.env.REACT_APP_SERVER_BASE || window.location.origin);
 const generateId = ()=>Math.random().toString(36).substr(2, 9);
 const localStorageUsernameKey = '4-in-a-row-username';
 
 
 const Setup = (props)=>{
-
+    console.log('ENV', process.env);
     const RowsNumber = 7, ColumnNumber = 6;
 
     const WinLen=4;

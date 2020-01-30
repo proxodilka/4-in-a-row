@@ -188,8 +188,8 @@ const Game = (props)=>{
         if (gameMode.alias===undefined)
             return "¯\\_(ツ)_/¯";
         switch (gameMode.alias[curePlayer-1]){
-            case 'player': return `Игрок ${curePlayer}`;
-            case 'ai': return `ИИ №${curePlayer}`;
+            case 'player': return `Player ${curePlayer}`;
+            case 'ai': return `AI №${curePlayer}`;
             default: return "¯\\_(ツ)_/¯";
         }
     };

@@ -9,9 +9,9 @@ const TableHeader = ({winner, currentPlayer, restart, exitGame, style})=>{
     // }
 
     switch (winner){
-        case -1: curePlayerText=`Сейчас ходит ${currentPlayer}`; break;
-        case 0: curePlayerText='Ничья!'; break; //lose
-        default: curePlayerText=`Победил ${currentPlayer}`;
+        case -1: curePlayerText=`Its now ${currentPlayer} turn`; break;
+        case 0: curePlayerText='Draw!'; break; //lose
+        default: curePlayerText=`${currentPlayer} has won!`;
     }
     return(
         <div style={style} className="tableHeader">

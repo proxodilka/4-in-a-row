@@ -12,16 +12,16 @@ const GameHeader = ({onGameModeChange, gameModes, gameState="setup", onGameStart
     let launchButtonContent;
     if (gameState==="ended") {
         launchButtonClassList+=" btn-secondary";
-        launchButtonContent = <span><i className="fa fa-repeat"></i> Начать заново</span>
+        launchButtonContent = <span><i className="fa fa-repeat"></i> Restart</span>
     }
     else if (gameState==="setup"){
         launchButtonClassList+=" btn-success";
-        launchButtonContent = <span><i className="fa fa-play"></i> Играть</span>
+        launchButtonContent = <span><i className="fa fa-play"></i> Play</span>
     }
     if (gameState==="is on"){
         selectorRootClassList+=" disabled";
         launchButtonClassList+=" btn-secondary";
-        launchButtonContent = <span><i className="fa fa-repeat"></i> Начать заново</span>
+        launchButtonContent = <span><i className="fa fa-repeat"></i> Restart</span>
     }
 
     const saveName = (e)=>{
