@@ -1,6 +1,6 @@
 # 4 in a row game
 
-**Training project by implementing 4 in a row game, targeted to learn basic React concepts**
+**Training project by implementing 4 in a row game, targeted to learn basic React concepts. [Demo](https://inarow-server.herokuapp.com/#/).**
 
 ![](https://sun9-28.userapi.com/c854416/v854416664/1e3770/Mee2MqxbLig.jpg)
 
